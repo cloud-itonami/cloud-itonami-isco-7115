@@ -2,6 +2,26 @@
 
 Open Occupation Blueprint for **ISCO-08 7115**: Carpenters and Joiners.
 
+**Maturity: `:implemented`** — CarpentryAdvisor ⊣ CarpentryGovernor as
+a langgraph StateGraph (`intake → advise → govern → decide →
+commit/hold`, human-approval interrupt), modeled on
+cloud-itonami-isco-4311's bookkeeping actor. 14 tests / 29 assertions
+green. The governor never dispatches hardware — it only gates what
+the cutting-support/material-handling robot below may execute.
+
+The cut HARD invariants — material basis and arithmetic, not
+convenience:
+
+1. **Material basis** — the proposed material must be a registered
+   key in the job's material-stock map (no fabricated material).
+2. **Stock ceiling** — the proposed quantity must not exceed the
+   registered on-hand stock for that material (you cannot cut what
+   you don't have).
+
+`:approve-powered-saw-operation` and `:approve-height-work` **always**
+escalate to human sign-off regardless of confidence, per this repo's
+Trust Controls (business-model.md).
+
 This repository designs a forkable OSS business for an independent carpenter: a cutting-support and material-handling robot performs measurement and panel-positioning tasks under a governor-gated actor, so the practice keeps its own job and safety records instead of renting a closed trades-management SaaS.
 
 ## Robotics premise
