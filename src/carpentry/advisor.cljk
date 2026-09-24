@@ -10,7 +10,7 @@
   A proposal: {:op :approve-cut|:approve-powered-saw-operation|:approve-height-work
                :effect :propose :job-id str :material str
                :quantity number :stake kw :confidence n :rationale str}"
-  (:require #?(:clj [clojure.edn :as edn]
+  (:require #?(:clj [kotoba.lang.edn :as edn]
                :cljs [cljs.reader :as edn])))
 
 (defprotocol Advisor
