@@ -1,0 +1,32 @@
+;; What this vertical's robot physically does, declared for
+;; kotoba.robotics.process (kotoba-lang/robotics). `kbb -M:physics` runs it.
+;;
+;; README "Robotics premise": a cutting-support and material-handling robot
+;; for carpenters and joiners (ISCO 7115) performs precision measurement and
+;; panel positioning; operating near powered saws or at height needs human
+;; sign-off. Its physical work is lifting cut panels into position and
+;; proof-loading timber members before they are used.
+;;
+;; Every number without a cited source is marked `estimate` in its :basis.
+;; Replacing an estimate with a sourced value is this bot's growth work.
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isco-7115"
+ :cases
+ [{:id :panel-position
+   :kind :manipulator
+   :procedure "arm lifts a cut plywood / MDF panel from the saw outfeed table and presents it at the fixing position on the frame"
+   :params {:l1-m 0.80 :l2-m 0.70 :m1-kg 12.0 :m2-kg 8.0
+            :from [0.95 0.10] :to [0.45 1.10] :duration-s 3.0 :steps 600}
+   :sweep {:param :payload-kg :values [2.0 5.0 10.0 15.0 20.0]}
+   :quantity :peak-tau1-nm
+   :limit {:max 300.0 :basis "estimate: continuous shoulder torque of a ~20 kg-payload industrial arm class"}
+   :boundary {:lo 0.5 :hi 60.0}}
+  {:id :batten-proof-load
+   :kind :material
+   :procedure "robot proof-loads a 45 x 45 mm softwood batten in tension before it is used as a temporary brace"
+   :params {:length-m 0.30 :area-m2 2.025e-3 :youngs-modulus-pa 11.0e9 :yield-stress-pa 14.5e6
+            :hardening-pa 0.5e9 :density-kg-m3 420.0}
+   :sweep {:param :max-force-n :values [10000.0 20000.0 30000.0 40000.0 50000.0]}
+   :quantity :final-strain
+   :limit {:max 0.00132 :basis "estimate: strain at a C24-class characteristic tensile strength (~14.5 MPa / E ~11 GPa, EN 338 class values not verified here); timber is brittle, the J2 yield is a stand-in for the failure onset"}
+   :boundary {:lo 5000.0 :hi 60000.0}}]}
